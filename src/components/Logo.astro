@@ -1,0 +1,34 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<a href="/">
+  <button class="home-button">
+    <Icon name="mdi:home" />
+  </button>
+</a>
+
+<style>
+  .home-button {
+    background: none;
+    border: none;
+    color: rgb(109, 112, 118);
+    display: block;
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    --size: 2.25rem;
+    width: var(--size);
+    height: var(--size);
+    cursor: pointer;
+    z-index: 1;
+    font-size: var(--size);
+  }
+  .home-button:hover {
+    color: #20BF5B;
+  }
+  .home-button .astro-icon {
+    width: var(--size);
+    height: var(--size);
+  }
+</style>

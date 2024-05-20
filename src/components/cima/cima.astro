@@ -1,0 +1,121 @@
+
+<style>
+
+  #sugerencias p {
+    background-color: var(--fondo-sugerencias);
+    transition: background-color var(--transition-speed) ease;
+  }
+
+  #sugerencias p:hover {
+    background-color: var(--fondo-sugerencias-hover);
+  }
+  
+</style>
+
+<div>
+  
+  <input type="text" id="inputNombre" placeholder="Ingrese el nombre del medicamento">
+  <button id="buscarBtn">Buscar</button>
+  <div id="sugerencias"></div>
+  <div id="resultado"></div>
+</div>
+
+<script>
+  let medicamentos = [];
+  document.addEventListener('DOMContentLoaded', function() {
+    let timer;
+    const inputNombre = document.getElementById('inputNombre');
+    const sugerenciasDiv = document.getElementById('sugerencias');
+    const buscarBtn = document.getElementById('buscarBtn');
+    const resultadosDiv = document.getElementById('resultado');
+
+    const limpiarSugerencias = () => {
+      sugerenciasDiv.innerHTML = '';
+    };
+
+    const buscarMedicamento = (nombre) => {
+      console.log('buscarMedicamento called with nombre:', nombre);
+      fetch(`/api/cima?nombre=${encodeURIComponent(nombre)}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('buscarMedicamento response data:', data);
+          if (data.resultados && data.resultados.length > 0) {
+            medicamentos = data.resultados;
+            renderMedicamentos();
+          } else {
+            medicamentos = [];
+            renderMedicamentos();
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          medicamentos = [];
+          renderMedicamentos();
+        });
+    };
+
+    const renderMedicamentos = () => {
+      resultadosDiv.innerHTML = '';
+      if (medicamentos.length > 0) {
+        medicamentos.forEach((medicamento) => {
+          const card = document.createElement('div');
+          card.classList.add('medicamento');  
+          card.innerHTML = `
+            <h2>${medicamento.nombre}</h2>
+            <p>Laboratorio titular: ${medicamento.labtitular}</p>
+            <p>Prescripción: ${medicamento.cpresc}</p>
+            <p>Comercializado: ${medicamento.comerc ? "Sí" : "No"}</p>
+            <p>Necesita receta: ${medicamento.receta ? "Sí" : "No"}</p>
+            <p>Vía de administración: ${medicamento.viasAdministracion.map(via => via.nombre).join(", ")}</p>
+            <p>Forma farmacéutica: ${medicamento.formaFarmaceutica.nombre}</p>
+            <div class="botones-contenedor">
+              <a href="${medicamento.docs[0]?.url || '#'}" target="_blank">Ficha Técnica PDF</a>
+              <a href="${medicamento.docs[0]?.urlHtml || '#'}" target="_blank" style="margin-left: 10px;">Web Ficha Técnica</a>
+            </div>
+            ${medicamento.fotos && medicamento.fotos.length > 0 ? medicamento.fotos.map(foto => `<img src="${foto.url}" alt="Imagen del medicamento" />`).join("") : ""}
+          `;
+          resultadosDiv.appendChild(card);
+        });
+      } else {
+        resultadosDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+      }
+    };
+
+    inputNombre.addEventListener('input', function() {
+      clearTimeout(timer);
+      const valor = this.value;
+      if (valor) {
+        timer = setTimeout(() => {
+          fetch(`/api/cima?nombre=${encodeURIComponent(valor)}`)
+            .then(response => response.json())
+            .then(data => {
+              limpiarSugerencias();
+              if (data.resultados && data.resultados.length > 0) {
+                data.resultados.forEach((medicamento) => {
+                  const p = document.createElement('p');
+                  p.textContent = medicamento.nombre;
+                  p.addEventListener('click', () => {
+                    inputNombre.value = medicamento.nombre;
+                    buscarMedicamento(medicamento.nombre);
+                    limpiarSugerencias();
+                  });
+                  sugerenciasDiv.appendChild(p);
+                });
+              } else {
+                sugerenciasDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        }, 500);
+      } else {
+        limpiarSugerencias();
+      }
+    });
+
+    buscarBtn.addEventListener('click', function() {
+      const nombre = inputNombre.value;
+      buscarMedicamento(nombre);
+      limpiarSugerencias();
+    });
+  });
+</script>
