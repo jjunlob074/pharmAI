@@ -4,7 +4,7 @@
   --color-text: theme("colors.gray.900");
   --color-text-offset: theme("colors.gray.600");
   --color-background: theme("colors.white");
-  --color-background-offset: theme("colors.green.300");
+  --color-background-offset: theme("colors.green.100");
   --color-border: theme("colors.gray.900" / 10%);
 }
 
