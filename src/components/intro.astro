@@ -4,7 +4,7 @@ import ContentSection from "~/components/content-section.astro";
 ---
 
 <ContentSection title=" Discover Our Platform" id="intro">
-  <Icon slot="eyebrow" name="logomark" class="size-32" />
+  <Icon slot="eyebrow" name="logomark" class="size-32 iluminate" />
   <Fragment slot="lead">
     Try our features: <span class="text-primary reveal">chat with AI</span>,
     access <span class="text-primary reveal">medication info</span>,
@@ -36,3 +36,13 @@ import ContentSection from "~/components/content-section.astro";
   </a>
   </div>
 </ContentSection>
+
+<style>
+  .iluminate {
+    transition: filter 0.5s ease-in-out;
+  }
+
+  .iluminate:hover {
+    filter:drop-shadow(2px 2px 4px #20C15B);
+  }
+</style>

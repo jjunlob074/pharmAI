@@ -3,8 +3,8 @@
   --color-secondary: theme("colors.green.800");
   --color-text: theme("colors.gray.900");
   --color-text-offset: theme("colors.gray.600");
-  --color-background: theme("colors.green.50");
-  --color-background-offset: theme("colors.green.100");
+  --color-background: theme("colors.white");
+  --color-background-offset: theme("colors.green.300");
   --color-border: theme("colors.gray.900" / 10%);
 }
 
