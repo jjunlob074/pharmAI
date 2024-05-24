@@ -1,0 +1,80 @@
+---
+import { Icon } from "astro-icon/components";
+import Logo from "~/components/Logo.astro";
+import "~/styles/index.css";
+
+const { generator, site } = Astro;
+const image = new URL("social.jpg", site);
+const description =
+  "Build fast websites, faster. Astro is a new kind of site builder for the modern web. Lightning-fast performance meets powerful developer experience.";
+---
+
+<!doctype html>
+<html lang="en" class="h-full motion-safe:scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={generator} />
+
+    <title>Astro Landing Page</title>
+    <meta name="description" content={description} />
+
+    <!-- social media -->
+    <meta property="og:title" content="Astro" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:url" content={site} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+<body class="dark-mode">
+  <header class="flex justify-between items-center p-4">
+    <Logo />
+    <button id="mode-toggle" class="flex items-center animate__animated animate__fadeIn">
+      <Icon name="mdi:theme-light-dark" class="theme-icon" />
+    </button>
+  </header>
+  <main class="p-4 animate__animated animate__fadeIn">
+    <slot />
+  </main>
+  <script>
+    function toggleMode() {
+  console.log("click");
+    const body = document.body;
+    if (body.classList.contains('dark-mode')) {
+      body.classList.remove('dark-mode');
+      body.classList.add('light-mode');
+    } else {
+      body.classList.remove('light-mode');
+      body.classList.add('dark-mode');
+    }
+  }
+  const changeTheme = document.querySelector('#mode-toggle');
+
+  changeTheme.addEventListener('click', toggleMode);
+  </script>
+</body>
+</html>
+
+<style>
+  #mode-toggle{
+    cursor: pointer;
+  }
+   #mode-toggle svg {
+    color:#000;
+    width: 32px;
+    height: 32px;
+    background-color: #20BF5B;
+  }
+  body.light-mode {
+    background: #ffffff;
+    color: #111827;
+  }
+
+  body.dark-mode {
+    background: #111827;
+    color: #ffffff;
+  }
+
+</style>

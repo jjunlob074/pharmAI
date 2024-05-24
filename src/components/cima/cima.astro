@@ -1,22 +1,13 @@
-
-<style>
-
-  #sugerencias p {
-    background-color: var(--fondo-sugerencias);
-    transition: background-color var(--transition-speed) ease;
-  }
-
-  #sugerencias p:hover {
-    background-color: var(--fondo-sugerencias-hover);
-  }
-  
-</style>
-
-<div>
-  
-  <input type="text" id="inputNombre" placeholder="Ingrese el nombre del medicamento">
-  <button id="buscarBtn">Buscar</button>
-  <div id="sugerencias"></div>
+<div class="w-full h-full">
+  <div class="mb-4">
+    <input type="text" id="inputNombre" placeholder="Enter the drug name" class="w-full px-4 py-2 border-2 border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+  </div>
+  <div class="mb-4">
+    <button id="buscarBtn" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500">
+      Search
+    </button>
+  </div>
+  <div id="sugerencias" class="mb-4 rounded-lg"></div>
   <div id="resultado"></div>
 </div>
 
@@ -24,7 +15,7 @@
   let medicamentos = [];
   document.addEventListener('DOMContentLoaded', function() {
     let timer;
-    const inputNombre = document.getElementById('inputNombre');
+    const inputNombre = document.getElementById('inputNombre') as HTMLInputElement;
     const sugerenciasDiv = document.getElementById('sugerencias');
     const buscarBtn = document.getElementById('buscarBtn');
     const resultadosDiv = document.getElementById('resultado');
@@ -59,31 +50,33 @@
       if (medicamentos.length > 0) {
         medicamentos.forEach((medicamento) => {
           const card = document.createElement('div');
-          card.classList.add('medicamento');  
+          card.classList.add('medicamento', 'bg-green-200','text-black', 'border', 'border-green-400', 'rounded', 'p-4', 'shadow-md', 'mb-4', 'flex', 'flex-col', 'md:flex-row', 'items-start','reveal');  
           card.innerHTML = `
-            <h2>${medicamento.nombre}</h2>
-            <p>Laboratorio titular: ${medicamento.labtitular}</p>
-            <p>Prescripción: ${medicamento.cpresc}</p>
-            <p>Comercializado: ${medicamento.comerc ? "Sí" : "No"}</p>
-            <p>Necesita receta: ${medicamento.receta ? "Sí" : "No"}</p>
-            <p>Vía de administración: ${medicamento.viasAdministracion.map(via => via.nombre).join(", ")}</p>
-            <p>Forma farmacéutica: ${medicamento.formaFarmaceutica.nombre}</p>
-            <div class="botones-contenedor">
-              <a href="${medicamento.docs[0]?.url || '#'}" target="_blank">Ficha Técnica PDF</a>
-              <a href="${medicamento.docs[0]?.urlHtml || '#'}" target="_blank" style="margin-left: 10px;">Web Ficha Técnica</a>
+            <div class="md:w-3/4">
+              <h2 class="text-xl font-bold mb-2">${medicamento.nombre}</h2>
+              <p class="mb-1"><span class="font-semibold">Laboratorio titular:</span> ${medicamento.labtitular}</p>
+              <p class="mb-1"><span class="font-semibold">Prescripción:</span> ${medicamento.cpresc}</p>
+              <p class="mb-1"><span class="font-semibold">Comercializado:</span> ${medicamento.comerc ? "Sí" : "No"}</p>
+              <p class="mb-1"><span class="font-semibold">Necesita receta:</span> ${medicamento.receta ? "Sí" : "No"}</p>
+              <p class="mb-1"><span class="font-semibold">Vía de administración:</span> ${medicamento.viasAdministracion.map(via => via.nombre).join(", ")}</p>
+              <p class="mb-1"><span class="font-semibold">Forma farmacéutica:</span> ${medicamento.formaFarmaceutica.nombre}</p>
+              <div class="botones-contenedor mt-2">
+                <a href="${medicamento.docs[0]?.url || '#'}" target="_blank" class="text-blue-700 underline">Ficha Técnica PDF</a>
+                <a href="${medicamento.docs[0]?.urlHtml || '#'}" target="_blank" class="text-blue-700 underline ml-4">Web Ficha Técnica</a>
+              </div>
             </div>
-            ${medicamento.fotos && medicamento.fotos.length > 0 ? medicamento.fotos.map(foto => `<img src="${foto.url}" alt="Imagen del medicamento" />`).join("") : ""}
+            ${medicamento.fotos && medicamento.fotos.length > 0 ? `<div class="md:w-1/4 md:flex md:flex-wrap md:justify-end">${medicamento.fotos.map(foto => `<img src="${foto.url}" alt="Imagen del medicamento" class="mt-2 md:mt-0 md:ml-4 w-48 h-48 object-cover"/>`).join("")}</div>` : ""}
           `;
           resultadosDiv.appendChild(card);
         });
       } else {
-        resultadosDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+        resultadosDiv.innerHTML = '<p class="text-red-500">No se encontraron resultados.</p>';
       }
     };
 
     inputNombre.addEventListener('input', function() {
       clearTimeout(timer);
-      const valor = this.value;
+      const valor = (this as HTMLInputElement).value;
       if (valor) {
         timer = setTimeout(() => {
           fetch(`/api/cima?nombre=${encodeURIComponent(valor)}`)
@@ -93,6 +86,7 @@
               if (data.resultados && data.resultados.length > 0) {
                 data.resultados.forEach((medicamento) => {
                   const p = document.createElement('p');
+                  p.classList.add('px-4', 'py-2', 'cursor-pointer', 'hover:bg-green-600');
                   p.textContent = medicamento.nombre;
                   p.addEventListener('click', () => {
                     inputNombre.value = medicamento.nombre;
@@ -102,7 +96,7 @@
                   sugerenciasDiv.appendChild(p);
                 });
               } else {
-                sugerenciasDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+                sugerenciasDiv.innerHTML = '<p class="px-4 py-2 text-gray-600">No se encontraron resultados.</p>';
               }
             })
             .catch(error => console.error('Error:', error));

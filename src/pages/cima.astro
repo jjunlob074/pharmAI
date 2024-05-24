@@ -1,16 +1,9 @@
 ---
-import Medicamentos from '../components/cima/cima.astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Medicamentos from '~/components/cima/cima.astro';
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PharmAI</title>
-</head>
-<body>
-  <h1>Buscar Medicamentos</h1>
+<BaseLayout>
+  <h1 class="text-xl font-semibold m-4">Search Information</h1>
   <Medicamentos />
-</body>
-</html>
+</BaseLayout>
