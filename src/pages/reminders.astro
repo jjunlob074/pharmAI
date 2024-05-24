@@ -29,42 +29,44 @@ const reminders = await db.select().from(MedicationReminder).orderBy(desc(Medica
 
   <form method="POST" class="grid gap-4 mb-8 p-4 border rounded shadow-lg bg-green-200">
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <label for="description" class="block text-sm font-black text-gray-700">Description</label>
       <input id="description" name="description" type="text" required class="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
 
     <div>
-      <label for="medication" class="block text-sm font-medium text-gray-700">Medication</label>
+      <label for="medication" class="block text-sm font-black text-gray-700">Medication</label>
       <input id="medication" name="medication" type="text" required class="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
 
     <div>
-      <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+      <label for="time" class="block text-sm font-black text-gray-700">Time</label>
       <input id="time" name="time" type="datetime-local" required class=" text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
 
     <input type="hidden" name="action" value="insert" />
     <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Add Reminder</button>
   </form>
-
-  <div class="grid gap-4">
-    {reminders.length === 0 ? (
-      <div class="p-4 border rounded shadow-lg bg-red-400">
-        <p class="text-black">No hay recordatorios.</p>
+  
+  {reminders.length === 0 ? (
+    <div class="flex items-center justify-center bg-red-400 rounded-lg">
+      <div class="p-6">
+        <p class="text-white font-bold text-center text-2xl">No hay recordatorios.</p>
       </div>
-    ) : (
-      reminders.map(reminder => (
-        <div key={reminder.id} class="p-4 border rounded shadow-lg bg-green-100">
-          <p class="text-black"><strong>Description:</strong> {reminder.description}</p>
-          <p class="text-black"><strong>Medication:</strong> {reminder.medication}</p>
-          <p class="text-black"><strong>Time:</strong> {new Date(reminder.time).toLocaleString()}</p>
-          <form method="POST" action="/reminders" class="mt-2">
+    </div>
+  ) : (
+    <div class="grid grid-cols-3 gap-4 text-center">
+      {reminders.map(reminder => (
+        <div key={reminder.id} class="p-6 border border-green-400 rounded-lg shadow-xl bg-green-100 hover:bg-green-200 transition duration-300">
+          <p class="text-gray-800 font-extrabold mb-2"><strong>Descripción:</strong> {reminder.description}</p>
+          <p class="text-gray-800 font-extrabold mb-2"><strong>Medicación:</strong> {reminder.medication}</p>
+          <p class="text-gray-800 font-extrabold mb-4"><strong>Hora:</strong> {new Date(reminder.time).toLocaleString()}</p>
+          <form method="POST" action="/reminders" class="mt-4">
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="id" value={reminder.id} />
-            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Delete</button>
+            <button type="submit" class="inline-flex justify-center py-3 px-5 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">Eliminar</button>
           </form>
         </div>
-      ))
-    )}
-  </div>
+      ))}
+    </div>
+  )}
 </BaseLayout>
