@@ -113,7 +113,7 @@ const reminders = await db.select().from(MedicationReminder).orderBy(desc(Medica
         }
       }
 
-      setInterval(checkReminders, 10000); // Verificar cada minuto
+      setInterval(checkReminders, 60000); // Verificar cada minuto
     });
   </script>
 </BaseLayout>
