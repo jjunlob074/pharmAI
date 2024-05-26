@@ -1,6 +1,8 @@
 ---
-import { db, MedicationReminder, eq, desc } from 'astro:db';
+import { db, MedicationReminder, eq, desc, lte } from 'astro:db';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+
+let alertMessages = [];
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -21,30 +23,50 @@ if (Astro.request.method === 'POST') {
   }
 }
 
+// Verificar recordatorios pasados y guardarlos en una variable
+const now = new Date();
+const pastReminders = await db.select().from(MedicationReminder).where(lte(MedicationReminder.time, now));
+if (pastReminders.length > 0) {
+  alertMessages = pastReminders.map(reminder => `HAY RECORDATORIOS QUE HAN LLEGADO A SU FIN: "${reminder.description}"`);
+  await db.delete(MedicationReminder).where(lte(MedicationReminder.time, now));
+}
+
 const reminders = await db.select().from(MedicationReminder).orderBy(desc(MedicationReminder.id));
 ---
 
 <BaseLayout>
   <h2 class="text-2xl font-bold mb-4">Reminders</h2>
 
+  {alertMessages.length > 0 && (
+    <div id="alert-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="text-black bg-yellow-400 p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-bold mb-4">Notificación de Recordatorios</h3>
+        {alertMessages.map(message => (
+          <p class="mb-2" key={message}>{message}</p>
+        ))}
+        <button id="close-alert" class="mt-4 px-4 py-2 bg-white text-black rounded-lg">Cerrar</button>
+      </div>
+    </div>
+  )}
+
   <form method="POST" class="grid gap-4 mb-8 p-4 border rounded shadow-lg bg-green-200">
     <div>
-      <label for="description" class="block text-sm font-black text-gray-700">Description</label>
+      <label for="description" class="block text-sm font-black text-gray-700">Descripción</label>
       <input id="description" name="description" type="text" required class="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
   
     <div>
-      <label for="medication" class="block text-sm font-black text-gray-700">Medication</label>
+      <label for="medication" class="block text-sm font-black text-gray-700">Medicación</label>
       <input id="medication" name="medication" type="text" required class="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
   
     <div>
-      <label for="time" class="block text-sm font-black text-gray-700">Time</label>
+      <label for="time" class="block text-sm font-black text-gray-700">Hora</label>
       <input id="time" name="time" type="datetime-local" required class="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
     </div>
   
     <input type="hidden" name="action" value="insert" />
-    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Add Reminder</button>
+    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Añadir Recordatorio</button>
   </form>
   
   {reminders.length === 0 ? (
@@ -69,18 +91,42 @@ const reminders = await db.select().from(MedicationReminder).orderBy(desc(Medica
       ))}
     </div>
   )}
-  
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const closeAlert = document.getElementById('close-alert');
+      if (closeAlert) {
+        closeAlert.addEventListener('click', () => {
+          document.getElementById('alert-modal').style.display = 'none';
+        });
+      }
+
+      async function checkReminders() {
+        try {
+          const response = await fetch('/api/reminders'); // Asegúrate de que la ruta sea correcta
+          const data = await response.json();
+          if (data.reload) {
+            location.reload();
+          }
+        } catch (error) {
+          console.error('Error checking reminders:', error);
+        }
+      }
+
+      setInterval(checkReminders, 10000); // Verificar cada minuto
+    });
+  </script>
 </BaseLayout>
 
 <style>
   @media (max-width: 269px) {
-  input {
-    max-width: 150px;
+    input {
+      max-width: 150px;
+    }
   }
-}
   @media (max-width: 200px) {
-  input {
-    max-width: 100px;
+    input {
+      max-width: 100px;
+    }
   }
-}
 </style>
