@@ -38,6 +38,9 @@ const description =
   <main class="p-4 animate__animated animate__fadeIn">
     <slot />
   </main>
+  <button id="back-to-top" style="display: none;">
+    <Icon name="mdi:arrow-up-bold" class="theme-icon" />
+  </button>
   <script>
     function toggleMode() {
   console.log("click");
@@ -53,6 +56,19 @@ const description =
   const changeTheme = document.querySelector('#mode-toggle');
 
   changeTheme.addEventListener('click', toggleMode);
+
+   // Scroll to top button
+   const backToTopButton = document.getElementById('back-to-top');
+    window.onscroll = function() {
+      if (window.pageYOffset > 100) {
+        backToTopButton.style.display = 'block';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    };
+    backToTopButton.onclick = function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
   </script>
 </body>
 </html>
@@ -76,5 +92,40 @@ const description =
     background: #111827;
     color: #ffffff;
   }
+  #back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 16px;
+    color: black;
+    background-color: #FFC107;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none; /* Hidden by default */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+  }
+  #back-to-top:hover {
+  background-color: #E0A800; /* Darker shade of the background color */
+  color: white; /* Change text color */
+}
+#back-to-top svg {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s;
+}
 
+#back-to-top:hover svg {
+  animation: move 0.4s infinite alternate;
+}
+
+@keyframes move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-3px);
+  }
+}
 </style>
