@@ -1,0 +1,236 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import Header from '../components/HeaderAbout.astro';
+import Footer from '../components/FooterAbout.astro';
+import { Icon } from "astro-icon/components";
+const pageTitle = "Milky-Way";
+
+
+---
+<Layout pageTitle={pageTitle}>
+    <div id="tsparticles"></div>
+    <div class="container">
+        <Header />
+        <div class="svg-image">
+            <Icon name="logomark" class="size-80 align-center" />
+        </div>
+        <h1>Hello, do you want to know about this project?</h1>
+        <h2>About</h2>
+        <p>
+            Praesent malesuada mi nisi, quis tempus magna venenatis ut.
+            Suspendisse tempor sem at scelerisque congue. Curabitur mollis,
+            mi id molestie finibus, metus sem sagittis nunc, euismod feugiat orci neque non lorem.
+            Aenean sollicitudin erat eu molestie tempus. Nunc ac eros elementum, fermentum lacus at,
+            pellentesque mauris. Suspendisse eros neque, interdum euismod consectetur convallis,
+            porttitor at massa. Phasellus a ultrices arcu. Donec viverra, lorem in pellentesque euismod,
+            libero justo gravida nibh, non ultricies justo purus ultrices est.
+        </p>
+        <p>
+            Ut at interdum dui. Donec ut ante ex. Maecenas id ex eget nibh consequat accumsan.
+            Proin semper semper dui nec feugiat. Donec cursus neque id aliquet finibus. Morbi
+            facilisis turpis nibh, nec dictum orci dictum nec. In hac habitasse platea dictumst.
+            Maecenas mollis turpis vitae turpis bibendum, vitae tristique arcu eleifend.
+        </p>
+        <h2>Tecnologies</h2>
+        <div class="skills center">
+            <img class="skills__img" width="46" height="46" alt="TypeScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="JavaScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="CSS" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="HTML" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="Git" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="Astro" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/astro/astro-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="TailwindCSS" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"/>
+
+        </div>
+        <h2>Interests</h2>
+        <p>
+            Ut at interdum dui. Donec ut ante ex. Maecenas id ex eget nibh consequat accumsan.
+            Proin semper semper dui nec feugiat. Donec cursus neque id aliquet finibus. Morbi
+            facilisis turpis nibh, nec dictum orci dictum nec. In hac habitasse platea dictumst.
+            Maecenas mollis turpis vitae turpis bibendum, vitae tristique arcu eleifend.
+        </p>
+        <Footer />
+    </div>
+   <script>
+    import { tsParticles } from "https://cdn.jsdelivr.net/npm/@tsparticles/engine@3.1.0/+esm";
+import { loadAll } from "https://cdn.jsdelivr.net/npm/@tsparticles/all@3.1.0/+esm";
+
+async function loadParticles(options) {
+  await loadAll(tsParticles);
+
+  await tsParticles.load({ id: "tsparticles", options });
+}
+
+const configs = {
+  particles: {
+    number: {
+      value: 30
+    },
+    color: {
+      value: "#28C963"
+    },
+    
+    links: {
+      enable: true,
+      distance: 200,
+      color: "#28C963"
+    },
+    shape: {
+      type: "circle"
+    },
+    opacity: {
+      value: 1
+    },
+    size: {
+      value: {
+        min: 4,
+        max: 6
+      }
+    },
+    move: {
+      enable: true,
+      speed: 2
+    }
+  },
+  poisson: {
+    enable: true
+  }
+};
+
+loadParticles(configs);
+
+   </script>
+</Layout>
+
+<style>
+:root {
+    --text: #fdebf3;
+    --text-light: #1e1e2e; 
+    --text-link: #09f54c;
+    --underline: #137104;
+    --header: 'Pacifico', cursive;
+    --body: 'Josefin Sans', sans-serif; 
+}
+#tsparticles {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            z-index: -1;
+        }
+
+
+html {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: justify;
+    z-index: 200;
+}
+
+h1, h2 {
+    font-family: var(--header);
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 2.6rem;
+    margin: 0;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+h2 {
+    text-decoration: underline var(--underline);
+    text-decoration-thickness: 4px;
+    text-underline-offset: 6px;
+    font-size: 2.1rem;
+    margin: 50px 0;
+}
+
+p {
+    font-family: var(--body);
+    font-size: 1.1rem;
+    hyphens: auto;
+    line-height: 1.5;
+    text-indent: 1rem;
+}
+
+small, li {
+    font-family: var(--body); 
+}
+
+
+/* Gifs */
+.gif {
+    margin: 20px 0 0 0;
+    text-align: center;
+}
+
+
+/* Items */
+.center {
+    text-align: center;
+}
+
+/* Skills */
+.skills {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.skills__img {
+    margin: 8px 4px;
+}
+.svg-image {
+    display: flex;
+    margin: 20px auto;
+    justify-content: center;
+}
+
+
+/* Media Query */
+@media only screen and (max-width: 600px) {
+    body {
+        width: 350px;
+    }
+
+    .navbar {
+        display: initial;
+    }
+
+    .navbar__title {
+        text-align: center;
+    }
+
+    .navbar__menu {
+        text-align: center;
+    }
+
+    .navbar__menu > a {
+        margin: 0 11px;
+    }
+
+    .skills__img {
+        height: 30px;
+        width: 30px;
+        margin: 8px 1px;
+    }
+
+    .badge__list {
+        font-size: 0.9rem;
+        text-indent: 0;
+    }
+
+    .pro-img {
+        height: auto;
+        width: 350px;
+    }
+}
+
+
+</style>
