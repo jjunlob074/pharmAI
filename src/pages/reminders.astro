@@ -70,7 +70,7 @@ if (user) {
 ---
 
 <BaseLayout>
-  <h3 class="text-3xl font-bold text-center text-green-600">
+  <h3 class="text-3xl font-bold text-center text-green-400">
     <p>Welcome {user ? user.username : 'Guest'}!</p>
     {user && (
       <form method="POST" action="/api/signout">
@@ -110,7 +110,7 @@ if (user) {
   
     <input type="hidden" name="action" value="insert" />
     {user ? (<button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Add Reminder</button>)
-    : <p class="text-2xl text-yellow-400 font-bold text-center">
+    : <p class="text-2xl text-gray-500 font-bold text-center">
      Register or log in to add a reminder. 
     <a href="/signup" class="text-blue-900 hover:text-blue-700">Sign up</a> or 
     <a href="/signin" class="text-blue-900 hover:text-blue-700">Log in</a>
