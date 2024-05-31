@@ -1,8 +1,9 @@
 ---
-import { db, MedicationReminder, eq, desc, lte } from 'astro:db';
+import { db, MedicationReminder, eq, desc, lte, and } from 'astro:db';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 
 let alertMessages = [];
+const user = Astro.locals.user;
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -12,8 +13,20 @@ if (Astro.request.method === 'POST') {
     const description = formData.get('description');
     const medication = formData.get('medication');
     const time = formData.get('time');
-    if (typeof description === 'string' && typeof medication === 'string' && typeof time === 'string') {
-      await db.insert(MedicationReminder).values({ description, medication, time: new Date(time) });
+    const userId = user.id; // Suponiendo que también obtienes userId del formulario
+
+    if (
+      typeof description === 'string' &&
+      typeof medication === 'string' &&
+      typeof time === 'string' &&
+      typeof userId === 'string'
+    ) {
+      await db.insert(MedicationReminder).values({
+        description,
+        medication,
+        time: new Date(time),
+        userId,
+      });
     }
   } else if (action === 'delete') {
     const id = formData.get('id');
@@ -25,24 +38,54 @@ if (Astro.request.method === 'POST') {
 
 // Verificar recordatorios pasados y guardarlos en una variable
 const now = new Date();
-const pastReminders = await db.select().from(MedicationReminder).where(lte(MedicationReminder.time, now));
-if (pastReminders.length > 0) {
-  alertMessages = pastReminders.map(reminder => `Reminders that have expired: "${reminder.description}" - "${reminder.medication}"`);
-  await db.delete(MedicationReminder).where(lte(MedicationReminder.time, now));
+
+if (user) {
+  const pastReminders = await db.select()
+    .from(MedicationReminder)
+    .where(
+      and(
+        eq(MedicationReminder.userId, user.id),
+        lte(MedicationReminder.time, now)
+      )
+    );
+
+  if (pastReminders.length > 0) {
+    alertMessages = pastReminders.map(reminder => `Reminder that has expired: "${reminder.description}" - "${reminder.medication}"`);
+    await db.delete(MedicationReminder).where(
+      and(
+        eq(MedicationReminder.userId, user.id),
+        lte(MedicationReminder.time, now)
+      )
+    );
+  }
 }
 
-const reminders = await db.select().from(MedicationReminder).orderBy(desc(MedicationReminder.id));
+let reminders = [];
+if (user) {
+  reminders = await db.select()
+    .from(MedicationReminder)
+    .where(eq(MedicationReminder.userId, user.id))
+    .orderBy(desc(MedicationReminder.id));
+}
 ---
 
 <BaseLayout>
+  <h3 class="text-3xl font-bold text-center text-green-600">
+    <p>Welcome {user ? user.username : 'Guest'}!</p>
+    {user && (
+      <form method="POST" action="/api/signout">
+        <button class="text-3xl font-bold text-center text-red-600 hover:text-red-700">Sign out</button>
+      </form>
+    )}
+  </h3>
   <h2 class="text-2xl font-bold mb-4">Reminders</h2>
 
   {alertMessages.length > 0 && (
     <div id="alert-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="text-black bg-yellow-400 p-6 rounded-lg shadow-lg">
         <h3 class="text-xl font-bold mb-4">You Have a Reminder Right Now!</h3>
-        {alertMessages.map(message => (
-          <p class="mb-2" key={message}>{message}</p>
+        {alertMessages.map((message, index) => (
+          <p class="mb-2" key={index}>{message}</p>
         ))}
         <button id="close-alert" class="mt-4 px-4 py-2 bg-white text-black rounded-lg">Close</button>
       </div>
@@ -66,10 +109,15 @@ const reminders = await db.select().from(MedicationReminder).orderBy(desc(Medica
     </div>
   
     <input type="hidden" name="action" value="insert" />
-    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Add Reminder</button>
+    {user ? (<button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Add Reminder</button>)
+    : <p class="text-2xl text-yellow-400 font-bold text-center">
+     Register or log in to add a reminder. 
+    <a href="/signup" class="text-blue-900 hover:text-blue-700">Sign up</a> or 
+    <a href="/signin" class="text-blue-900 hover:text-blue-700">Log in</a>
+  </p>}
   </form>
   
-  {reminders.length === 0 ? (
+  {!user && reminders.length === 0 ? (
     <div class="flex items-center justify-center bg-red-400 rounded-lg">
       <div class="p-6">
         <p class="text-white font-bold text-center text-2xl">There are no reminders.</p>

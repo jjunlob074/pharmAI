@@ -1,0 +1,197 @@
+---
+import MainLayout from "~/layouts/BaseLayout.astro";
+const { url } = Astro.request;
+const queryParams = new URL(url).searchParams;
+const message = queryParams.get('message');
+import astronautImage from "~/assets/astronaut.png";
+import { Image } from "astro:assets";
+const widths = [100, 100];
+const sizes = "(min-width: 640px) 10vw, 12vw";
+---
+
+<MainLayout>
+  <section>
+    <div id="tsparticles"></div>
+    <div
+      class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+    >
+      <div class="relative mb-6 floating">
+        <Image
+          src={astronautImage}
+          widths={widths}
+          sizes={sizes}
+          loading="eager"
+          alt="A floating astronaut in a space suit"
+        />
+        <div class="tooltip-text">Welcome Back, Human!</div>
+      </div>
+      <div
+        class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1
+            class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+          >
+            Sign In to your account
+          </h1>
+          <form
+            class="space-y-4 md:space-y-6"
+            method="POST"
+            action="/api/signin"
+          >
+            <div>
+              <label
+                for="username"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Your username</label
+              >
+              <input
+                type="text"
+                name="username"
+                id="username"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required=""
+              />
+            </div>
+            <div>
+              <label
+                for="password"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Password</label
+              >
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="••••••••"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required=""
+              />
+            </div>
+            {message && (
+              <div class="font-semibold text-red-600 text-md">{message}</div>
+            )}
+            <button
+              type="submit"
+              class="w-full text-white bg-green-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >Sign In</button
+            >
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              Don't have an account? <a
+                href="/signup"
+                class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                >Sign Up</a
+              >
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    import { tsParticles } from "https://cdn.jsdelivr.net/npm/@tsparticles/engine@3.1.0/+esm";
+    import { loadAll } from "https://cdn.jsdelivr.net/npm/@tsparticles/all@3.1.0/+esm";
+
+    async function loadParticles(options) {
+    await loadAll(tsParticles);
+
+    await tsParticles.load({ id: "tsparticles", options });
+    }
+
+    const configs = {
+    particles: {
+        number: {
+        value: 30
+        },
+        color: {
+        value: "#28C963"
+        },
+        
+        links: {
+        enable: true,
+        distance: 200,
+        color: "#28C963"
+        },
+        shape: {
+        type: "circle"
+        },
+        opacity: {
+        value: 1
+        },
+        size: {
+        value: {
+            min: 4,
+            max: 6
+        }
+        },
+        move: {
+        enable: true,
+        speed: 2
+        }
+    },
+    poisson: {
+        enable: true
+    }
+    };
+
+    loadParticles(configs);
+
+   </script>
+</MainLayout>
+
+<style>
+  #tsparticles {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            z-index: -1;
+        }
+
+  .floating {
+    animation: float 5s ease-in-out infinite;
+    position: relative;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #E0A800;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%; /* Posiciona el tooltip encima del elemento */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #E0A800 transparent transparent transparent;
+  }
+
+  .floating:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+</style>

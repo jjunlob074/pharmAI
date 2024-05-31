@@ -9,6 +9,11 @@ import db from "@astrojs/db";
 export default defineConfig({
   site: "https://astro-moon-landing.netlify.app/",
   integrations: [tailwind(), icon(), db()],
+  vite: {
+    optimizeDeps: {
+      exclude: ["oslo"]
+    }
+  },
   output: 'server',
   adapter: node({
     mode: 'standalone'
