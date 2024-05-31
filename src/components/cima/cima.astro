@@ -9,7 +9,7 @@
   </div>
   <div id="sugerencias" class="mb-4 rounded-lg"></div>
   <div id="resultado"></div>
-  <div id="paginador" class="mt-4 flex justify-center mb-12"></div>
+  <div id="paginador" class="mt-4 flex justify-center items-center mb-12"></div>
 </div>
 
 <script>
@@ -127,7 +127,7 @@
                   sugerenciasDiv.appendChild(p);
                 });
               } else {
-                sugerenciasDiv.innerHTML = '<p class="px-4 py-2 text-gray-600">No se encontraron resultados.</p>';
+                sugerenciasDiv.innerHTML = '<p class="px-4 py-2 text-red-500">No se encontraron resultados.</p>';
               }
             })
             .catch(error => console.error('Error:', error));
