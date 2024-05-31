@@ -9,29 +9,33 @@
   </div>
   <div id="sugerencias" class="mb-4 rounded-lg"></div>
   <div id="resultado"></div>
+  <div id="paginador" class="mt-4 flex justify-center mb-12"></div>
 </div>
 
 <script>
   let medicamentos = [];
+  let paginaActual = 1;
+  const medicamentosPorPagina = 5;
+
   document.addEventListener('DOMContentLoaded', function() {
     let timer;
-    const inputNombre = document.getElementById('inputNombre') as HTMLInputElement;
+    const inputNombre = document.getElementById('inputNombre');
     const sugerenciasDiv = document.getElementById('sugerencias');
     const buscarBtn = document.getElementById('buscarBtn');
     const resultadosDiv = document.getElementById('resultado');
+    const paginadorDiv = document.getElementById('paginador');
 
     const limpiarSugerencias = () => {
       sugerenciasDiv.innerHTML = '';
     };
 
     const buscarMedicamento = (nombre) => {
-      console.log('buscarMedicamento called with nombre:', nombre);
       fetch(`/api/cima?nombre=${encodeURIComponent(nombre)}`)
         .then(response => response.json())
         .then(data => {
-          console.log('buscarMedicamento response data:', data);
           if (data.resultados && data.resultados.length > 0) {
             medicamentos = data.resultados;
+            paginaActual = 1;
             renderMedicamentos();
           } else {
             medicamentos = [];
@@ -47,8 +51,14 @@
 
     const renderMedicamentos = () => {
       resultadosDiv.innerHTML = '';
+      paginadorDiv.innerHTML = '';
+
       if (medicamentos.length > 0) {
-        medicamentos.forEach((medicamento) => {
+        const inicio = (paginaActual - 1) * medicamentosPorPagina;
+        const fin = inicio + medicamentosPorPagina;
+        const medicamentosPagina = medicamentos.slice(inicio, fin);
+
+        medicamentosPagina.forEach((medicamento) => {
           const card = document.createElement('div');
           card.classList.add('medicamento', 'bg-green-300','text-black', 'border', 'border-green-500', 'rounded', 'p-4', 'shadow-md', 'mb-4', 'flex', 'flex-col', 'md:flex-row', 'items-center','reveal');  
           card.innerHTML = `
@@ -69,6 +79,27 @@
           `;
           resultadosDiv.appendChild(card);
         });
+
+        const totalPaginas = Math.ceil(medicamentos.length / medicamentosPorPagina);
+        for (let i = 1; i <= totalPaginas; i++) {
+          const botonPagina = document.createElement('button');
+          botonPagina.textContent = i;
+          botonPagina.classList.add('px-4', 'py-2', 'border', 'border-gray-400', 'rounded-lg', 'mx-1', 'hover:bg-gray-300');
+          if (i === paginaActual) {
+            botonPagina.classList.add('bg-gray-400', 'text-white');
+          }
+          botonPagina.addEventListener('click', () => {
+            paginaActual = i;
+            renderMedicamentos();
+          });
+          paginadorDiv.appendChild(botonPagina);
+        }
+
+        const totalResultados = document.createElement('span');
+        totalResultados.textContent = `Total resultados: ${medicamentos.length}`;
+        totalResultados.classList.add('ml-4', 'text-yellow-500', 'font-semibold');
+        paginadorDiv.appendChild(totalResultados);
+
       } else {
         resultadosDiv.innerHTML = '<p class="text-red-500">No se encontraron resultados.</p>';
       }
@@ -76,7 +107,7 @@
 
     inputNombre.addEventListener('input', function() {
       clearTimeout(timer);
-      const valor = (this as HTMLInputElement).value;
+      const valor = this.value;
       if (valor) {
         timer = setTimeout(() => {
           fetch(`/api/cima?nombre=${encodeURIComponent(valor)}`)
