@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+const description = "404";
+---
+<Layout>
+    <div class="lost">
+        <div class="gif">
+            <img width="300" height="259" alt="Astronaut404Gif" src="/rotating_astronaut.gif"/>
+        </div>
+        <h1 class="lost__header">{ description }</h1>
+        <p class="lost__body">Pharmabot can do many things for you, but it hasn't found anything at this URL :(</p>
+        <p>
+            <a class="lost__link" href="/">Return Home</a>
+        </p>
+    </div>
+</Layout>
+
+<style>
+/* 404 */
+.gif {
+    display:flex;
+    justify-content: center;
+}
+.lost {
+    margin-top: 5%;
+    text-align: center;
+}
+
+.lost__header {
+    color: #1FBE5A;
+    margin: 0 auto;
+    text-align: center;
+    border: 0;
+    font-size: 7.5rem;
+    letter-spacing: 10px;
+}
+
+.lost__body {
+    color: #5C5B77;
+}
+
+.lost__link {
+    color: #1FBE5A;
+    text-decoration: none;
+}
+</style>

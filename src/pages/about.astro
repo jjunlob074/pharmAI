@@ -13,26 +13,24 @@ const pageTitle = "Milky-Way";
         <Header />
         <div class="svg-image">
             <Icon name="logomark" class="size-80 align-center" />
+            <div class="tooltip-text">Hi, Human!</div>
         </div>
-        <h1>Hello, do you want to know about this project?</h1>
+        <h1><span class="typed"></span></h1>
         <h2>About</h2>
         <p>
-            Praesent malesuada mi nisi, quis tempus magna venenatis ut.
-            Suspendisse tempor sem at scelerisque congue. Curabitur mollis,
-            mi id molestie finibus, metus sem sagittis nunc, euismod feugiat orci neque non lorem.
-            Aenean sollicitudin erat eu molestie tempus. Nunc ac eros elementum, fermentum lacus at,
-            pellentesque mauris. Suspendisse eros neque, interdum euismod consectetur convallis,
-            porttitor at massa. Phasellus a ultrices arcu. Donec viverra, lorem in pellentesque euismod,
-            libero justo gravida nibh, non ultricies justo purus ultrices est.
+            Welcome to <strong>Pharmai</strong>, your intelligent pharmacy assistant. At <strong>Pharmai</strong>, we are dedicated to enhancing your healthcare experience through the power of artificial intelligence.
+            Our platform offers an <strong>advanced medication search engine</strong>, an <strong>AI chat</strong> to answer your questions, and <strong>personalized reminders</strong> to ensure you never forget to take your medicines.
         </p>
         <p>
-            Ut at interdum dui. Donec ut ante ex. Maecenas id ex eget nibh consequat accumsan.
-            Proin semper semper dui nec feugiat. Donec cursus neque id aliquet finibus. Morbi
-            facilisis turpis nibh, nec dictum orci dictum nec. In hac habitasse platea dictumst.
-            Maecenas mollis turpis vitae turpis bibendum, vitae tristique arcu eleifend.
+            Whether you need to find information about a specific medication, consult our AI about any health-related concerns, or simply receive a timely reminder, <strong>Pharmai is here to assist you</strong>.
+            We strive to provide a <strong>friendly and efficient experience</strong>, ensuring you have access to the information and support you need to take care of your health.
         </p>
+        <p>
+            <strong>Explore Pharmai</strong> and discover how we can help you manage your health more easily and effectively. <strong>We are here to make your life healthier and happier</strong>!
+        </p>
+        
         <h2>Tecnologies</h2>
-        <div class="skills center">
+        <div class="skills center glass">
             <img class="skills__img" width="46" height="46" alt="TypeScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"/>
             <img class="skills__img" width="46" height="46" alt="JavaScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"/>
             <img class="skills__img" width="46" height="46" alt="CSS" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"/>
@@ -40,66 +38,105 @@ const pageTitle = "Milky-Way";
             <img class="skills__img" width="46" height="46" alt="Git" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"/>
             <img class="skills__img" width="46" height="46" alt="Astro" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/astro/astro-original.svg"/>
             <img class="skills__img" width="46" height="46" alt="TailwindCSS" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"/>
-
         </div>
+        <h2>Stack</h2>
+        <div class="skills center glass">
+            <img class="skills__img" width="46" height="46" alt="Linux" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="Ubuntu" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg"/>
+            <img class="skills__img" width="46" height="46" alt="Visual Studio Code" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"/>
+            <img class="skills__img" width="46" height="46" alt="GitHub" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"/>
+        </div>    
         <h2>Interests</h2>
-        <p>
-            Ut at interdum dui. Donec ut ante ex. Maecenas id ex eget nibh consequat accumsan.
-            Proin semper semper dui nec feugiat. Donec cursus neque id aliquet finibus. Morbi
-            facilisis turpis nibh, nec dictum orci dictum nec. In hac habitasse platea dictumst.
-            Maecenas mollis turpis vitae turpis bibendum, vitae tristique arcu eleifend.
+            <ul class="text-base antialiased italic font-semibold">
+                <li>Advancements in Pharmaceutical Technology</li>
+                <li>Artificial Intelligence Applications in Healthcare</li>
+                <li>Health Informatics and Data Management</li>
+                <li>Patient Adherence and Medication Compliance</li>
+                <li>Developing Intelligent Chatbots for Healthcare</li>
+                <li>Impact of AI on Public Health</li>
+                <li>Ethics and AI in Medicine</li>
+                <li>Clinical Decision Support Systems</li>
+                <li>Personalized Medicine through AI</li>
+            </ul>
+        <h2>Disclaimer</h2>
+        <p>This is an academic project. The information and content provided are for educational and research purposes only. 
+        The views and opinions expressed in this project are those of the authors and do not necessarily reflect the official policy or position of any affiliated institutions. 
+        The project is a work in progress and may contain errors or omissions. Users should independently verify any information before relying on it
         </p>
         <Footer />
     </div>
    <script>
     import { tsParticles } from "https://cdn.jsdelivr.net/npm/@tsparticles/engine@3.1.0/+esm";
-import { loadAll } from "https://cdn.jsdelivr.net/npm/@tsparticles/all@3.1.0/+esm";
+    import { loadAll } from "https://cdn.jsdelivr.net/npm/@tsparticles/all@3.1.0/+esm";
 
-async function loadParticles(options) {
-  await loadAll(tsParticles);
+    async function loadParticles(options) {
+    await loadAll(tsParticles);
 
-  await tsParticles.load({ id: "tsparticles", options });
-}
-
-const configs = {
-  particles: {
-    number: {
-      value: 30
-    },
-    color: {
-      value: "#28C963"
-    },
-    
-    links: {
-      enable: true,
-      distance: 200,
-      color: "#28C963"
-    },
-    shape: {
-      type: "circle"
-    },
-    opacity: {
-      value: 1
-    },
-    size: {
-      value: {
-        min: 4,
-        max: 6
-      }
-    },
-    move: {
-      enable: true,
-      speed: 2
+    await tsParticles.load({ id: "tsparticles", options });
     }
-  },
-  poisson: {
-    enable: true
-  }
-};
 
-loadParticles(configs);
+    const configs = {
+    particles: {
+        number: {
+        value: 30
+        },
+        color: {
+        value: "#28C963"
+        },
+        
+        links: {
+        enable: true,
+        distance: 200,
+        color: "#28C963"
+        },
+        shape: {
+        type: "circle"
+        },
+        opacity: {
+        value: 1
+        },
+        size: {
+        value: {
+            min: 4,
+            max: 6
+        }
+        },
+        move: {
+        enable: true,
+        speed: 2
+        }
+    },
+    poisson: {
+        enable: true
+    }
+    };
+
+    loadParticles(configs);
 
    </script>
+   <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+   <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const typed = new Typed('.typed', {
+        strings: [
+            '<i class="typed-text">Hello, do you want to know about the project?</i>',
+            '<i class="typed-text">PharmaBot Can help you :)</i>',
+            '<i class="typed-text">Get to know us!</i>'
+        ],
+        typeSpeed: 100,
+        startDelay: 300,
+        backSpeed: 100,
+        smartBackspace: true,
+        backDelay: 1500,
+        loop: true,
+        loopCount: false,
+        showCursor: true,
+        cursorChar: '|',
+        contentType: 'html',
+    });
+});
+
+  </script>
 </Layout>
 
 <style>
@@ -125,7 +162,7 @@ html {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     text-align: justify;
     z-index: 200;
@@ -157,9 +194,24 @@ p {
     hyphens: auto;
     line-height: 1.5;
     text-indent: 1rem;
+    border-radius: 12px;
+    background: rgba(0, 255, 0, 0.3); /* Fondo semi-transparente */
+    border: 1px solid #ffffff20;
+    backdrop-filter: blur(16px) saturate(120%); /* Aumenta el valor de blur para más desenfoque */
+    padding: 20px;
+    margin: 2rem 0;
 }
-
-small, li {
+ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: disc;
+}
+ul li {
+    margin: 0.5rem 0;
+    text-align: left; /* Asegura que el texto de cada elemento esté alineado a la izquierda */
+}
+small {
     font-family: var(--body); 
 }
 
@@ -178,57 +230,75 @@ small, li {
 
 /* Skills */
 .skills {
-    margin-top: 20px;
+    margin: 20px;
     display: flex;
     justify-content: center;
+    padding: 1rem;
 }
-
+.glass {
+    border-radius: 12px;
+    background: #ffffff1a;
+    border: 1px solid #ffffff20;
+    backdrop-filter: blur(16px) saturate(120%); 
+}
 .skills__img {
-    margin: 8px 4px;
+    margin: 8px 12px;
 }
 .svg-image {
-    display: flex;
-    margin: 20px auto;
-    justify-content: center;
-}
+            display: flex;
+            margin: 20px auto;
+            justify-content: center;
+            position: relative; /* Añadido para posicionar el tooltip correctamente */
+        }
 
+        .svg-image .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color:#E0A800 ;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 90%; /* Posiciona el tooltip encima del elemento */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .svg-image .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #E0A800 transparent transparent transparent;
+        }
+
+        .svg-image:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .svg-image:hover svg {
+            filter: drop-shadow(0 0 6px #E0A800); /* Añadir sombra al SVG al hacer hover */
+        }
 
 /* Media Query */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 550px) {
     body {
-        width: 350px;
+        width: 500px;
     }
 
-    .navbar {
-        display: initial;
-    }
-
-    .navbar__title {
-        text-align: center;
-    }
-
-    .navbar__menu {
-        text-align: center;
-    }
-
-    .navbar__menu > a {
-        margin: 0 11px;
-    }
 
     .skills__img {
         height: 30px;
         width: 30px;
         margin: 8px 1px;
-    }
-
-    .badge__list {
-        font-size: 0.9rem;
-        text-indent: 0;
-    }
-
-    .pro-img {
-        height: auto;
-        width: 350px;
     }
 }
 
