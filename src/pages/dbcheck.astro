@@ -1,5 +1,5 @@
 ---
-import { db, User, Session, MedicationReminder, Post, Comment } from "astro:db";
+import { db, User, Session, MedicationReminder, Post, Comment, Like } from "astro:db";
 
 // Consulta los datos de la base de datos
 const users = await db.select().from(User);
@@ -7,6 +7,7 @@ const sessions = await db.select().from(Session);
 const medicationReminders = await db.select().from(MedicationReminder);
 const posts = await db.select().from(Post);
 const comments = await db.select().from(Comment);
+const likes = await db.select().from(Like);
 ---
 
 <!doctype html>
@@ -135,7 +136,6 @@ const comments = await db.select().from(Comment);
                 </p>
                 <p><strong>Content:</strong> Content of the post</p>
                 <p><strong>Created At:</strong> Date and time when the post was created</p>
-                <p><strong>Likes:</strong> Number of likes</p>
             </div>
 
             <div>
@@ -151,6 +151,19 @@ const comments = await db.select().from(Comment);
                 </p>
                 <p><strong>Content:</strong> Content of the comment</p>
                 <p><strong>Created At:</strong> Date and time when the comment was created</p>
+            </div>
+
+            <div>
+                <h2>Likes</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for like
+                </p>
+                <p>
+                    <span class="fk">Post ID (FK):</span> Identifier of the post
+                </p>
+                <p>
+                    <span class="fk">User ID (FK):</span> Identifier of the User
+                </p>
             </div>
         </div>
 
@@ -226,7 +239,6 @@ const comments = await db.select().from(Comment);
                     <th>User ID</th>
                     <th>Content</th>
                     <th>Created At</th>
-                    <th>Likes</th>
                 </tr>
             </thead>
             <tbody>
@@ -236,7 +248,6 @@ const comments = await db.select().from(Comment);
                         <td class="relation">{post.userId}</td>
                         <td>{post.content}</td>
                         <td>{new Date(post.createdAt).toLocaleString()}</td>
-                        <td>{post.likes}</td>
                     </tr>
                 ))}
             </tbody>
@@ -261,6 +272,26 @@ const comments = await db.select().from(Comment);
                         <td class="relation">{comment.userId}</td>
                         <td>{comment.content}</td>
                         <td>{new Date(comment.createdAt).toLocaleString()}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
+        <h1>Likes</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Post ID</th>
+                    <th>User ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {likes.map((like) => (
+                    <tr>
+                        <td>{like.id}</td>
+                        <td class="relation">{like.postId}</td>
+                        <td class="relation">{like.userId}</td>
                     </tr>
                 ))}
             </tbody>

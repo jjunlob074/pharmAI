@@ -1,7 +1,5 @@
 import { defineDb, defineTable, column } from "astro:db";
 
-// https://astro.build/db/config
-
 // Definir tabla de usuarios
 const User = defineTable({
   columns: {
@@ -38,7 +36,6 @@ const Post = defineTable({
     userId: column.text({ optional: false, references: () => User.columns.id }), // Referencia a User
     content: column.text({ optional: false }),
     createdAt: column.date({ optional: false }),
-    likes: column.number({ optional: false, default: 0 }), // Número de "me gusta"
   }
 });
 
@@ -53,6 +50,15 @@ const Comment = defineTable({
   }
 });
 
+// Definir tabla de "me gusta"
+const Like = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true, autoIncrement: true }), // Autoincremental
+    postId: column.number({ optional: false, references: () => Post.columns.id }), // Referencia a Post
+    userId: column.text({ optional: false, references: () => User.columns.id }), // Referencia a User
+  }
+});
+
 // Exportar la configuración de la base de datos
 export default defineDb({
   tables: {
@@ -61,5 +67,6 @@ export default defineDb({
     MedicationReminder,
     Post,
     Comment,
+    Like,
   },
 });

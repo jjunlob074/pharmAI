@@ -1,11 +1,11 @@
 ---
-import { db, User, Post, Comment, eq, desc } from "astro:db";
+import { db, User, Post, Comment, Like, eq, desc, and } from "astro:db";
 import { count } from "drizzle-orm";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 
 const user = Astro.locals.user;
 
-// Manejar acciones de inserción y eliminación
+// Manejar acciones de inserción, eliminación y "me gusta"
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     const action = formData.get("action");
@@ -24,8 +24,9 @@ if (Astro.request.method === "POST") {
     } else if (action === "deletePost") {
         const postId = formData.get("postId");
         if (typeof postId === "string") {
-            // Eliminar comentarios asociados al post
+            // Eliminar comentarios y "me gusta" asociados al post
             await db.delete(Comment).where(eq(Comment.postId, Number(postId)));
+            await db.delete(Like).where(eq(Like.postId, Number(postId)));
             // Luego eliminar el post
             await db.delete(Post).where(eq(Post.id, Number(postId)));
         }
@@ -51,6 +52,51 @@ if (Astro.request.method === "POST") {
         if (typeof commentId === "string") {
             await db.delete(Comment).where(eq(Comment.id, Number(commentId)));
         }
+    } else if (action === "likePost") {
+        const postId = formData.get("postId");
+        const userId = user.id;
+
+        if (typeof postId === "string" && typeof userId === "string") {
+            const existingLike = await db
+                .select()
+                .from(Like)
+                .where(
+                    and(
+                        eq(Like.postId, Number(postId)),
+                        eq(Like.userId, userId)
+                    )
+                );
+
+            if (existingLike.length === 0) {
+                await db.insert(Like).values({
+                    postId: Number(postId),
+                    userId,
+                });
+
+                // No es necesario actualizar el contador de likes en la tabla de posts
+            }
+        }
+    } else if (action === "unlikePost") {
+        const postId = formData.get("postId");
+        const userId = user.id;
+
+        if (typeof postId === "string" && typeof userId === "string") {
+            const existingLike = await db
+                .select()
+                .from(Like)
+                .where(
+                    and(
+                        eq(Like.postId, Number(postId)),
+                        eq(Like.userId, userId)
+                    )
+                );
+
+            if (existingLike.length > 0) {
+                await db.delete(Like).where(eq(Like.id, existingLike[0].id));
+
+                // No es necesario actualizar el contador de likes en la tabla de posts
+            }
+        }
     }
 }
 
@@ -64,7 +110,7 @@ const page = Number(url.searchParams.get("page")) || 1;
 // Calcular el offset
 const offset = (page - 1) * POSTS_PER_PAGE;
 
-// Obtener posts con paginación
+// Obtener posts con paginación y contar "me gusta"
 const posts = await db
     .select({
         post: Post,
@@ -75,6 +121,15 @@ const posts = await db
     .orderBy(desc(Post.createdAt))
     .limit(POSTS_PER_PAGE)
     .offset(offset);
+
+// Obtener la cantidad de "me gusta" de cada post
+for (let i = 0; i < posts.length; i++) {
+    const likesCount = await db
+        .select({ count: count(Like.id) })
+        .from(Like)
+        .where(eq(Like.postId, posts[i].post.id));
+    posts[i].post.likes = likesCount[0].count;
+}
 
 // Obtener el número total de posts
 const totalPostsResult = await db
@@ -151,6 +206,9 @@ const comments = await db
                     <p class="text-green-500 text-sm">
                         {new Date(post.createdAt).toLocaleString()}
                     </p>
+                    <p class="text-green-500 text-sm">
+                        {post.likes} {post.likes === 1 ? "like" : "likes"}
+                    </p>
                     {user && user.id === post.userId && (
                         <form method="POST" action="/community" class="mt-2">
                             <input
@@ -170,6 +228,46 @@ const comments = await db
                                 Delete Post
                             </button>
                         </form>
+                    )}
+                    {user && (
+                        <>
+                            <form method="POST" action="/community" class="mt-2">
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="likePost"
+                                />
+                                <input
+                                    type="hidden"
+                                    name="postId"
+                                    value={post.id}
+                                />
+                                <button
+                                    type="submit"
+                                    class="rounded bg-blue-500 px-4 py-2 text-white"
+                                >
+                                    Like
+                                </button>
+                            </form>
+                            <form method="POST" action="/community" class="mt-2">
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="unlikePost"
+                                />
+                                <input
+                                    type="hidden"
+                                    name="postId"
+                                    value={post.id}
+                                />
+                                <button
+                                    type="submit"
+                                    class="rounded bg-gray-500 px-4 py-2 text-white"
+                                >
+                                    Unlike
+                                </button>
+                            </form>
+                        </>
                     )}
                     {user ? (
                         <form method="POST" action="/community" class="mt-2">
