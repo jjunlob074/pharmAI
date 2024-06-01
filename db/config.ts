@@ -31,11 +31,35 @@ const MedicationReminder = defineTable({
   }
 });
 
+// Definir tabla de posts
+const Post = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true, autoIncrement: true }), // Autoincremental
+    userId: column.text({ optional: false, references: () => User.columns.id }), // Referencia a User
+    content: column.text({ optional: false }),
+    createdAt: column.date({ optional: false }),
+    likes: column.number({ optional: false, default: 0 }), // Número de "me gusta"
+  }
+});
+
+// Definir tabla de comentarios
+const Comment = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true, autoIncrement: true }), // Autoincremental
+    postId: column.number({ optional: false, references: () => Post.columns.id }), // Referencia a Post
+    userId: column.text({ notNull: true, references: () => User.columns.id }),
+    content: column.text({ optional: false }),
+    createdAt: column.date({ optional: false }),
+  }
+});
+
 // Exportar la configuración de la base de datos
 export default defineDb({
   tables: {
     User,
     Session,
     MedicationReminder,
+    Post,
+    Comment,
   },
 });

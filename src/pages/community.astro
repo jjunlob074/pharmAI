@@ -1,0 +1,231 @@
+---
+import { db, User, Post, Comment, eq, desc } from "astro:db";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+const user = Astro.locals.user;
+
+// Manejar acciones de inserción y eliminación
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const action = formData.get("action");
+
+    if (action === "insertPost") {
+        const content = formData.get("content");
+        const userId = user.id;
+
+        if (typeof content === "string" && typeof userId === "string") {
+            await db.insert(Post).values({
+                content,
+                userId,
+                createdAt: new Date(),
+            });
+        }
+    } else if (action === "deletePost") {
+        const postId = formData.get("postId");
+        if (typeof postId === "string") {
+            await db.delete(Post).where(eq(Post.id, Number(postId)));
+        }
+    } else if (action === "insertComment") {
+        const content = formData.get("content");
+        const postId = formData.get("postId");
+        const userId = user.id;
+
+        if (
+            typeof content === "string" &&
+            typeof postId === "string" &&
+            typeof userId === "string"
+        ) {
+            await db.insert(Comment).values({
+                content,
+                postId: Number(postId),
+                userId,
+                createdAt: new Date(),
+            });
+        }
+    } else if (action === "deleteComment") {
+        const commentId = formData.get("commentId");
+        if (typeof commentId === "string") {
+            await db.delete(Comment).where(eq(Comment.id, Number(commentId)));
+        }
+    }
+}
+
+// Obtener posts con el nombre de usuario del creador
+const posts = await db
+    .select({
+        post: Post,
+        postUser: User,
+    })
+    .from(Post)
+    .innerJoin(User, eq(Post.userId, User.id))
+    .orderBy(desc(Post.createdAt));
+
+// Obtener comentarios con el nombre de usuario del creador y el post asociado
+const comments = await db
+    .select({
+        comment: Comment,
+        commentUser: User,
+        post: Post,
+    })
+    .from(Comment)
+    .innerJoin(User, eq(Comment.userId, User.id))
+    .innerJoin(Post, eq(Comment.postId, Post.id));
+---
+
+<BaseLayout>
+    <h3 class="text-3xl font-bold text-center text-green-400">
+        Welcome {user ? user.username : 'Guest'}!
+    </h3>
+    <div class="container mx-auto p-6 text-black">
+        <h1 class="mb-6 font-bold text-green-400 text-3xl">Community Posts</h1>
+
+        {
+            user ? (
+                <form method="POST" action="/community" class="mb-6">
+                    <textarea
+                        name="content"
+                        required
+                        class="mb-2 w-full rounded border border-green-300 p-2"
+                    />
+                    <input type="hidden" name="action" value="insertPost" />
+                    <button
+                        type="submit"
+                        class="rounded bg-green-500 px-4 py-2 text-white"
+                    >
+                        Create Post
+                    </button>
+                </form>
+            ) : (
+            <p class="text-2xl mb-4 text-gray-500 font-bold text-center">
+                Register or log in to add a Post or Comment. 
+                <a href="/signup" class="text-blue-900 hover:text-blue-700">Sign up</a> or 
+                <a href="/signin" class="text-blue-900 hover:text-blue-700">Log in</a>
+            </p>
+            )
+        }
+
+        {
+            posts.map(({ post, postUser }) => (
+                <div
+                    key={post.id}
+                    class="mb-6 rounded border border-green-200 bg-emerald-50 p-4"
+                >
+                    <h3 class="text-xl">{post.content}</h3>
+                    <p>
+                        <strong class="text-green-600">
+                            {postUser.username}
+                        </strong>
+                    </p>
+                    <p class="text-green-500 text-sm">
+                        {new Date(post.createdAt).toLocaleString()}
+                    </p>
+                    {user && user.id === post.userId && (
+                        <form method="POST" action="/community" class="mt-2">
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="deletePost"
+                            />
+                            <input
+                                type="hidden"
+                                name="postId"
+                                value={post.id}
+                            />
+                            <button
+                                type="submit"
+                                class="rounded bg-red-400 px-2 py-1 text-white"
+                            >
+                                Delete Post
+                            </button>
+                        </form>
+                    )}
+                    {user ? (
+                        <form method="POST" action="/community" class="mt-2">
+                            <textarea
+                                name="content"
+                                required
+                                class="mb-2 w-full rounded border border-green-300 p-2 text-black"
+                            />
+                            <input
+                                type="hidden"
+                                name="postId"
+                                value={post.id}
+                            />
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="insertComment"
+                            />
+                            <button
+                                type="submit"
+                                class="rounded bg-green-500 px-4 py-2 text-white"
+                            >
+                                Comment
+                            </button>
+                        </form>
+                    ) : (
+                        ""
+                    )}
+
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-yellow-500">
+                            Comments
+                        </summary>
+                        <ul class="ml-4 mt-2">
+                            {comments
+                                .filter(
+                                    ({ comment }) => comment.postId === post.id,
+                                )
+                                .map(({ comment, commentUser }) => (
+                                    <li key={comment.id} class="mb-2">
+                                        <p>
+                                            <strong class="text-green-600">
+                                                {commentUser.username}
+                                            </strong>
+                                            : {comment.content}
+                                        </p>
+                                        <p class="text-green-500 text-sm">
+                                            {new Date(
+                                                comment.createdAt,
+                                            ).toLocaleString()}
+                                        </p>
+                                        {user && user.id === comment.userId && (
+                                            <form
+                                                method="POST"
+                                                action="/community"
+                                                class="mt-2"
+                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="action"
+                                                    value="deleteComment"
+                                                />
+                                                <input
+                                                    type="hidden"
+                                                    name="commentId"
+                                                    value={comment.id}
+                                                />
+                                                <button
+                                                    type="submit"
+                                                    class="rounded bg-red-400 px-2 py-1 text-white"
+                                                >
+                                                    Delete Comment
+                                                </button>
+                                            </form>
+                                        )}
+                                    </li>
+                                ))}
+                            {comments.filter(
+                                ({ comment }) => comment.postId === post.id,
+                            ).length === 0 && (
+                                <p class="text-red-600">
+                                    No hay comentarios aún
+                                </p>
+                            )}
+                        </ul>
+                    </details>
+                </div>
+            ))
+        }
+    </div>
+</BaseLayout>

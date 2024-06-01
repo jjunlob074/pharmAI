@@ -1,10 +1,12 @@
 ---
-import { db, User, Session, MedicationReminder } from "astro:db";
+import { db, User, Session, MedicationReminder, Post, Comment } from "astro:db";
 
 // Consulta los datos de la base de datos
 const users = await db.select().from(User);
 const sessions = await db.select().from(Session);
 const medicationReminders = await db.select().from(MedicationReminder);
+const posts = await db.select().from(Post);
+const comments = await db.select().from(Comment);
 ---
 
 <!doctype html>
@@ -12,7 +14,7 @@ const medicationReminders = await db.select().from(MedicationReminder);
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Medication Reminders</title>
+        <title>Database Schema</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -122,6 +124,34 @@ const medicationReminders = await db.select().from(MedicationReminder);
                 <p><strong>Medication:</strong> Name of the medication</p>
                 <p><strong>Time:</strong> Date and time of the reminder</p>
             </div>
+
+            <div>
+                <h2>Posts</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for post
+                </p>
+                <p>
+                    <span class="fk">User ID (FK):</span> Identifier of the user
+                </p>
+                <p><strong>Content:</strong> Content of the post</p>
+                <p><strong>Created At:</strong> Date and time when the post was created</p>
+                <p><strong>Likes:</strong> Number of likes</p>
+            </div>
+
+            <div>
+                <h2>Comments</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for comment
+                </p>
+                <p>
+                    <span class="fk">Post ID (FK):</span> Identifier of the post
+                </p>
+                <p>
+                    <span class="fk">User ID (FK):</span> Identifier of the User
+                </p>
+                <p><strong>Content:</strong> Content of the comment</p>
+                <p><strong>Created At:</strong> Date and time when the comment was created</p>
+            </div>
         </div>
 
         <h1>Users</h1>
@@ -134,15 +164,13 @@ const medicationReminders = await db.select().from(MedicationReminder);
                 </tr>
             </thead>
             <tbody>
-                {
-                    users.map((user) => (
-                        <tr>
-                            <td class="relation">{user.id}</td>
-                            <td>{user.username}</td>
-                            <td>{user.password}</td>
-                        </tr>
-                    ))
-                }
+                {users.map((user) => (
+                    <tr>
+                        <td class="relation">{user.id}</td>
+                        <td>{user.username}</td>
+                        <td>{user.password}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
 
@@ -156,17 +184,13 @@ const medicationReminders = await db.select().from(MedicationReminder);
                 </tr>
             </thead>
             <tbody>
-                {
-                    sessions.map((session) => (
-                        <tr>
-                            <td>{session.id}</td>
-                            <td class="relation">{session.userId}</td>
-                            <td>
-                                {new Date(session.expiresAt).toLocaleString()}
-                            </td>
-                        </tr>
-                    ))
-                }
+                {sessions.map((session) => (
+                    <tr>
+                        <td>{session.id}</td>
+                        <td class="relation">{session.userId}</td>
+                        <td>{new Date(session.expiresAt).toLocaleString()}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
 
@@ -182,17 +206,63 @@ const medicationReminders = await db.select().from(MedicationReminder);
                 </tr>
             </thead>
             <tbody>
-                {
-                    medicationReminders.map((reminder) => (
-                        <tr>
-                            <td>{reminder.id}</td>
-                            <td class="relation">{reminder.userId}</td>
-                            <td>{reminder.description}</td>
-                            <td>{reminder.medication}</td>
-                            <td>{new Date(reminder.time).toLocaleString()}</td>
-                        </tr>
-                    ))
-                }
+                {medicationReminders.map((reminder) => (
+                    <tr>
+                        <td>{reminder.id}</td>
+                        <td class="relation">{reminder.userId}</td>
+                        <td>{reminder.description}</td>
+                        <td>{reminder.medication}</td>
+                        <td>{new Date(reminder.time).toLocaleString()}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
+        <h1>Posts</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Content</th>
+                    <th>Created At</th>
+                    <th>Likes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {posts.map((post) => (
+                    <tr>
+                        <td>{post.id}</td>
+                        <td class="relation">{post.userId}</td>
+                        <td>{post.content}</td>
+                        <td>{new Date(post.createdAt).toLocaleString()}</td>
+                        <td>{post.likes}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
+        <h1>Comments</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Post ID</th>
+                    <th>User ID</th>
+                    <th>Content</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {comments.map((comment) => (
+                    <tr>
+                        <td>{comment.id}</td>
+                        <td class="relation">{comment.postId}</td>
+                        <td class="relation">{comment.userId}</td>
+                        <td>{comment.content}</td>
+                        <td>{new Date(comment.createdAt).toLocaleString()}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     </body>
