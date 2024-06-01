@@ -17,22 +17,28 @@ const navItems: Array<NavItem> = [
   id="page-header"
   class="absolute bottom-0 z-20 flex w-full items-center justify-between border-b border-transparent px-8 py-4 text-white"
 >
-  <a class="flex items-center gap-3 hover:!text-default" href="#">
+   <div class="flex items-center gap-3">
     <h1 class="sr-only">PharmAI</h1>
+    <a href="/">
     <Icon name="logomark" class="size-10" />
+    </a>
     <p>
       {user ? (
         <span>
           welcome, {user.username}
           <form method="POST" action="/api/signout">
-            <button class="text-md font-bold text-center text-red-500 hover:text-red-700 underline underline-offset-1">Log out</button>
+            <button class="text-red-500 hover:text-red-700 underline underline-offset-1">Log out</button>
           </form>
         </span>
       ) : (
-        ''
+        <span>
+          <a href="/signup" class="text-green-400 hover:text-green-600 underline underline-offset-1">Sign up</a> 
+          or 
+          <a href="/signin" class="text-green-400 hover:text-green-600 underline underline-offset-1">Log in</a>
+        </span>
       )}
-    </p>    
-  </a>
+    </p> 
+  </div>   
   <div>
     <div class="flex items-center gap-6">
       <nav class="hidden sm:block">

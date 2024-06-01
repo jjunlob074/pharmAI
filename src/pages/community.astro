@@ -1,5 +1,6 @@
 ---
 import { db, User, Post, Comment, eq, desc } from "astro:db";
+import { count } from "drizzle-orm";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 
 const user = Astro.locals.user;
@@ -23,6 +24,9 @@ if (Astro.request.method === "POST") {
     } else if (action === "deletePost") {
         const postId = formData.get("postId");
         if (typeof postId === "string") {
+            // Eliminar comentarios asociados al post
+            await db.delete(Comment).where(eq(Comment.postId, Number(postId)));
+            // Luego eliminar el post
             await db.delete(Post).where(eq(Post.id, Number(postId)));
         }
     } else if (action === "insertComment") {
@@ -50,7 +54,17 @@ if (Astro.request.method === "POST") {
     }
 }
 
-// Obtener posts con el nombre de usuario del creador
+// Definir la cantidad de posts por página
+const POSTS_PER_PAGE = 5;
+
+// Obtener el número de página desde la query string
+const url = new URL(Astro.request.url);
+const page = Number(url.searchParams.get("page")) || 1;
+
+// Calcular el offset
+const offset = (page - 1) * POSTS_PER_PAGE;
+
+// Obtener posts con paginación
 const posts = await db
     .select({
         post: Post,
@@ -58,7 +72,17 @@ const posts = await db
     })
     .from(Post)
     .innerJoin(User, eq(Post.userId, User.id))
-    .orderBy(desc(Post.createdAt));
+    .orderBy(desc(Post.createdAt))
+    .limit(POSTS_PER_PAGE)
+    .offset(offset);
+
+// Obtener el número total de posts
+const totalPostsResult = await db
+    .select({ value: count(Post.id).as("count") })
+    .from(Post);
+
+const totalPosts = totalPostsResult[0].value;
+const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
 // Obtener comentarios con el nombre de usuario del creador y el post asociado
 const comments = await db
@@ -70,6 +94,7 @@ const comments = await db
     .from(Comment)
     .innerJoin(User, eq(Comment.userId, User.id))
     .innerJoin(Post, eq(Comment.postId, Post.id));
+
 ---
 
 <BaseLayout>
@@ -105,6 +130,13 @@ const comments = await db
         }
 
         {
+            posts.length === 0 ? (
+                <div class="mb-6 rounded border border-yellow-400 bg-yellow-100 p-4 text-center">
+                <h3 class="text-xl text-yellow-600">
+                    No hay ningún post disponible, Puedes ser el primero en crearlo :)
+                </h3>
+                </div>
+            ) : (
             posts.map(({ post, postUser }) => (
                 <div
                     key={post.id}
@@ -225,7 +257,23 @@ const comments = await db
                         </ul>
                     </details>
                 </div>
-            ))
+            )))
         }
+
+        {/* Paginación */}
+        <div class="flex justify-center mt-6">
+            {Array.from({ length: totalPages }, (_, i) => (
+                <a
+                    href={`?page=${i + 1}`}
+                    class={`mx-1 px-3 py-1 border ${
+                        page === i + 1
+                            ? 'bg-green-500 text-white'
+                            : 'bg-white text-green-500'
+                    }`}
+                >
+                    {i + 1}
+                </a>
+            ))}
+        </div>
     </div>
 </BaseLayout>
