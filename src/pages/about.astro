@@ -38,6 +38,7 @@ const pageTitle = "Milky-Way";
             <img class="skills__img" width="64" height="64" alt="Git" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"/>
             <img class="skills__img" width="64" height="64" alt="Astro" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/astro/astro-original.svg"/>
             <img class="skills__img" width="64" height="64" alt="TailwindCSS" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"/>
+            <img class="skills__img" width="128" height="64" alt="TailwindCSS" src="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg"/>
         </div>
         <h2>Stack</h2>
         <div class="skills center glass">
@@ -289,11 +290,24 @@ small {
         }
 
 /* Media Query */
+/* Media query para pantallas con un ancho máximo de 950px */
+@media only screen and (max-width: 950px) {
+    body {
+        width: 900px;
+    }
+
+    .skills__img {
+        height: 60px;
+        width: 60px;
+        margin: 10px 2px;
+    }
+}
+
+/* Media query para pantallas con un ancho máximo de 550px */
 @media only screen and (max-width: 550px) {
     body {
         width: 500px;
     }
-
 
     .skills__img {
         height: 30px;
@@ -301,6 +315,5 @@ small {
         margin: 8px 1px;
     }
 }
-
 
 </style>
