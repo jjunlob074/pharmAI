@@ -1,0 +1,199 @@
+---
+import { db, User, Session, MedicationReminder } from "astro:db";
+
+// Consulta los datos de la base de datos
+const users = await db.select().from(User);
+const sessions = await db.select().from(Session);
+const medicationReminders = await db.select().from(MedicationReminder);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Medication Reminders</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #111827;
+                color: #fff;
+                margin: 0;
+                padding: 20px;
+            }
+            h1 {
+                color: #fff;
+                font-weight: bold;
+                font-size: 24px;
+                padding-bottom: 10px;
+                text-decoration: underline;
+                text-decoration-color: #fff;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            table,
+            th,
+            td {
+                border: 1px solid #fff;
+            }
+            th,
+            td {
+                padding: 12px;
+                text-align: center;
+            }
+            th {
+                background-color: #20bf5b;
+                color: #fff;
+            }
+            .relation {
+                color: #ffc107;
+            }
+            .schema {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin-bottom: 40px;
+                position: relative;
+            }
+            .schema div {
+                background: #333;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 10px;
+                width: 250px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
+            .schema div h2 {
+                text-decoration: none;
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            .schema div p {
+                margin: 5px 0;
+            }
+            .pk {
+                color: #00ff00;
+                font-weight: bold;
+            }
+            .fk {
+                color: #ff00ff;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Database Schema</h1>
+        <div class="schema">
+            <div>
+                <h2>Sessions</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for session
+                </p>
+                <p>
+                    <span class="fk">User ID (FK):</span> Identifier of the user
+                </p>
+                <p>
+                    <strong>Expires At:</strong> Expiration date and time of the
+                    session
+                </p>
+            </div>
+
+            <div>
+                <h2>Users</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for user
+                </p>
+                <p><strong>Username:</strong> Username of the user</p>
+                <p><strong>Password:</strong> Password of the user</p>
+            </div>
+
+            <div>
+                <h2>Medication Reminders</h2>
+                <p>
+                    <span class="pk">ID (PK):</span> Unique identifier for reminder
+                </p>
+                <p>
+                    <span class="fk">User ID (FK):</span> Identifier of the user
+                </p>
+                <p><strong>Description:</strong> Description of the reminder</p>
+                <p><strong>Medication:</strong> Name of the medication</p>
+                <p><strong>Time:</strong> Date and time of the reminder</p>
+            </div>
+        </div>
+
+        <h1>Users</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    users.map((user) => (
+                        <tr>
+                            <td class="relation">{user.id}</td>
+                            <td>{user.username}</td>
+                            <td>{user.password}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+
+        <h1>Sessions</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Expires At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    sessions.map((session) => (
+                        <tr>
+                            <td>{session.id}</td>
+                            <td class="relation">{session.userId}</td>
+                            <td>
+                                {new Date(session.expiresAt).toLocaleString()}
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+
+        <h1>Medication Reminders</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Description</th>
+                    <th>Medication</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    medicationReminders.map((reminder) => (
+                        <tr>
+                            <td>{reminder.id}</td>
+                            <td class="relation">{reminder.userId}</td>
+                            <td>{reminder.description}</td>
+                            <td>{reminder.medication}</td>
+                            <td>{new Date(reminder.time).toLocaleString()}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </body>
+</html>
