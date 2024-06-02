@@ -1,0 +1,27 @@
+---
+import ContentSection from "~/components/content-section.astro";
+---
+<style>
+    #banner {
+    height: 400px;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    }
+    section {
+    padding: 100px;
+    }
+
+</style>
+
+<section 
+class="flex scroll-mt-24 flex-col items-center gap-4 space-y-8"
+id="banner" 
+style="background-image: url(/astronaut.png);"
+>
+    <h2 class="gradient-text text-center font-extrabold tracking-tight text-2xl reveal">Welcome Human! I'm PharmaBot</h2>
+</section>
