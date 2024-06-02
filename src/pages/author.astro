@@ -1,0 +1,21 @@
+---
+import Avatar from '../components/Avatar.astro';
+import Details from '../components/Details.astro';
+import Socials from '../components/Socials.astro';
+import Layout from '../layouts/BaseLayout.astro';
+
+
+---
+
+<Layout >
+	<div
+			class="bg-horizonAnimated bg-cover bg-scroll bg-center bg-no-repeat"
+		>
+			<div class="grid min-h-dvh grid-cols-1 place-content-start place-items-center gap-5">
+				<Avatar />
+				<Details />
+				<Socials />
+			</div>
+		</div>
+
+</Layout>
