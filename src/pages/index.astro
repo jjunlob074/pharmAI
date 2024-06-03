@@ -9,6 +9,7 @@ import Splash from "~/components/splash.astro";
 import Showcase from "~/components/showcase.astro";
 import ParallaxBanner from "~/components/parallax-banner.astro";
 import SocialCards from "~/components/CardSocial.astro";
+import TextImage from "~/components/text-image.astro";
 import "~/styles/index.css";
 
 const { generator, site } = Astro;
@@ -68,10 +69,11 @@ const description =
     <Header />
     <Splash />
     <ParallaxBanner />
-    <div class="space-y-24 px-24 py-32 reveal">
+    <div class="space-y-40 px-24 py-32 reveal">
       <Features />
       <Intro />
       <Showcase />
+      <TextImage />
       <SocialCards />
     </div>
     <Footer />
