@@ -13,7 +13,7 @@ if (Astro.request.method === 'POST') {
     const description = formData.get('description');
     const medication = formData.get('medication');
     const time = formData.get('time');
-    const userId = user.id; // Suponiendo que también obtienes userId del formulario
+    const userId = user.id;
 
     if (
       typeof description === 'string' &&
@@ -35,7 +35,15 @@ if (Astro.request.method === 'POST') {
     }
   }
 }
-
+if (Astro.request.method !== 'POST') {
+  // Capturar alertMessages desde los parámetros de la URL
+  const url = new URL(Astro.request.url);
+  const params = url.searchParams;
+  const alertMessagesParam = params.get('alertMessages');
+  if (alertMessagesParam) {
+    alertMessages = JSON.parse(alertMessagesParam);
+  }
+}
 // Verificar recordatorios pasados y guardarlos en una variable
 const now = new Date();
 
@@ -148,8 +156,9 @@ if (user) {
         try {
           const response = await fetch('/api/reminders'); // Asegúrate de que la ruta sea correcta
           const data = await response.json();
-          if (data.reload) {
-            location.reload();
+          if (data.reload && data.alertMessages && data.alertMessages.length > 0) {
+            const params = new URLSearchParams({ alertMessages: JSON.stringify(data.alertMessages) });
+            window.location.href = `?${params.toString()}`;
           }
         } catch (error) {
           console.error('Error checking reminders:', error);
