@@ -3,16 +3,15 @@ import ContentSection from "~/components/content-section.astro";
 ---
 <style>
         .neon {
-        color: #fff; /* Color de texto blanco */
         animation: lightPulse 6s infinite ease-in-out;
         text-shadow:
             0 0 1px #fff,    /* Múltiples sombras para crear el efecto de neón */
             0 0 2px #fff,
-            0 0 4px #2DCC68, /* Cambiando el color de neón al deseado */
+            0 0 4px #4AF2C8, /* Cambiando el color de neón al deseado */
             0 0 8px #2DCC68,
-            0 0 16px #2DCC68,
+            0 0 16px #4AF2C8,
             0 0 32px #2DCC68,
-            0 0 64px #2DCC68,
+            0 0 64px #4AF2C8,
             0 0 128px #2DCC68;
         }
 
@@ -23,7 +22,6 @@ import ContentSection from "~/components/content-section.astro";
         background-attachment: fixed;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
     }
 
@@ -41,11 +39,16 @@ import ContentSection from "~/components/content-section.astro";
         }
     }
 </style>
-
-<section 
-class="flex scroll-mt-24 flex-col items-center gap-4 space-y-8"
-id="banner" 
-style="background-image: url(/astronaut.png);"
+<div
+    class="bg-horizonAnimated bg-cover bg-scroll bg-center bg-no-repeat"
 >
-    <h2 class="neon gradient-text text-center font-extrabold tracking-tight text-2xl reveal">Welcome Human! I'm PharmaBot</h2>
-</section>
+    <section 
+        class="flex scroll-mt-24 flex-col items-start gap-4 space-y-8"
+        id="banner" 
+        style="background-image: url(/astronaut.png);"
+    >
+        <h2 class="neon gradient-text text-center font-extrabold tracking-tight text-2xl reveal">
+            Welcome Human! I'm PharmaBot
+        </h2>
+    </section>
+</div>
