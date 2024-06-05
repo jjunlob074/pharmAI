@@ -10,6 +10,7 @@ import Showcase from "~/components/showcase.astro";
 import ParallaxBanner from "~/components/parallax-banner.astro";
 import SocialCards from "~/components/CardSocial.astro";
 import TextImage from "~/components/text-image.astro";
+import CardFlip from '~/components/CardFlip.astro';
 import "~/styles/index.css";
 
 const { generator, site } = Astro;
@@ -72,6 +73,11 @@ const description =
     <div class="space-y-40 px-24 py-32 reveal">
       <Features />
       <Intro />
+      <CardFlip 
+      href="/pharmacies" 
+      title="Encuentra Farmacias" 
+      description="" 
+      />
       <Showcase />
       <TextImage />
       <SocialCards />
