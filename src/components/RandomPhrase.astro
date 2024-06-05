@@ -1,0 +1,28 @@
+---
+import ContentSection from "~/components/content-section.astro";
+---
+<ContentSection title="Learn About Pharmacology" id="Pharmacology">
+  <p id="phrase" class="text-xl font-bold text-center italic reveal"></p>
+</ContentSection>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:11111/random_phrase', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors' // Asegura que las solicitudes sean CORS
+      });
+      console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('phrase').textContent = `"${data.phrase}"`;
+      } else {
+        console.error('Failed to fetch phrase');
+      }
+    } catch (error) {
+      console.error('Error fetching phrase:', error);
+    }
+  });
+</script>
