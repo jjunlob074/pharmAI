@@ -1,17 +1,24 @@
 ---
 import Layout from '../layouts/BaseLayout.astro';
-const description = "404";
+const description = "oh, Pharmabot has been abducted!";
 ---
 <Layout>
     <div class="lost">
         <div class="gif">
-            <img width="300" height="259" alt="Astronaut404Gif" src="/rotating_astronaut.gif"/>
+            <video width="300" height="259" src="/404.mp4" autoplay loop muted></video>
         </div>
-        <h1 class="lost__header">{ description }</h1>
-        <p class="lost__body">Pharmabot can do many things for you, but it hasn't found anything at this URL :(</p>
+        <h1 class="lost__header">{description}</h1>
+        <p class="lost__body">we could not find the url you requested :(</p>
         <p>
             <a class="lost__link" href="/">Return Home</a>
         </p>
+    </div>
+    <div id="astronaut" class="hidden fixed bottom-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center transition-transform duration-300 translate-y-full">
+        <div id="bubble" class="relative bg-yellow-500 text-black p-2 rounded-md mb-2">
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-yellow-500"></div>
+            Rescue me
+        </div>
+        <img src="/astronaut.png" alt="Astronaut" id="astronaut-img">
     </div>
 </Layout>
 
@@ -28,11 +35,10 @@ const description = "404";
 
 .lost__header {
     color: #1FBE5A;
-    margin: 0 auto;
+    margin: 20px auto;
     text-align: center;
     border: 0;
-    font-size: 7.5rem;
-    letter-spacing: 10px;
+    font-size: 2rem;
 }
 
 .lost__body {
@@ -43,4 +49,51 @@ const description = "404";
     color: #1FBE5A;
     text-decoration: none;
 }
+
+/* Ensure image and bubble size are appropriate */
+#astronaut-img {
+    max-width: 100%;
+    height: auto;
+}
+
+#bubble {
+    white-space: nowrap;
+    font-size: 1.25rem; /* Adjust font size as needed */
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+}
+
+.animate-wiggle {
+    animation: wiggle 2s infinite;
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
+    #bubble {
+        font-size: 1rem; /* Smaller font size for small screens */
+        padding: 0.5rem; /* Adjust padding */
+    }
+
+    .lost__header {
+        font-size: 1.5rem; /* Smaller header size for small screens */
+    }
+}
 </style>
+
+<script>
+    let timeout;
+    document.addEventListener('mousemove', () => {
+        const astronaut = document.getElementById('astronaut');
+        astronaut.classList.remove('hidden');
+        astronaut.classList.remove('translate-y-full');
+        astronaut.classList.add('translate-y-0');
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            astronaut.classList.add('translate-y-full');
+            astronaut.classList.remove('translate-y-0');
+        }, 2000); // 2 segundos de inactividad antes de ocultar
+    });
+</script>
