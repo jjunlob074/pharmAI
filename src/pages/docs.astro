@@ -1,0 +1,28 @@
+---
+import Page from "../components/PageDoc.astro";
+import SiteHeader from "../components/SiteHeaderDoc.astro";
+
+const title = "PharmAI Docs";
+const description = "Comprehensive Documentation for PharmAI Platform";
+---
+
+<Page {title} {description}>
+    <SiteHeader />
+
+    <div class="flex justify-center">
+        <div class="text-lg w-5/6 lg:w-3/4">
+            <h1 class="my-6 font-semibold">
+                Welcome to PharmAI Documentation
+            </h1>
+            <p class="my-6">
+                PharmAI is your trusted AI-powered pharmaceutical assistant, designed to provide real-time assistance and comprehensive resources on medications, drug interactions, and healthcare protocols. Our platform leverages cutting-edge technology to ensure you receive the most accurate and up-to-date information.
+            </p>
+            <p class="my-6">
+                Dive into our extensive documentation to understand how PharmAI can be integrated into your healthcare routine, or how it enhances professional healthcare services with robust AI capabilities. Explore detailed guides, API documentation, and user manuals to get the most out of PharmAI.
+            </p>
+            <p class="my-6">
+                To ensure our platform remains accessible and up to standard, all resources are continually updated and are freely available on our <a href="https://github.com/jjunlob074" class="underline underline-offset-2">GitHub repository</a>. Licensed under the MIT License, we encourage developers and professionals alike to contribute to and expand the capabilities of PharmAI.
+            </p>
+        </div>
+    </div>
+</Page>

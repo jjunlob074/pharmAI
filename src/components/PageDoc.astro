@@ -1,0 +1,42 @@
+---
+import BaseHead from "./BaseHeadDoc.astro";
+import Footer from "./FooterDoc.astro";
+
+export interface Props {
+    title: string;
+    description: string;
+}
+const { title, description } = Astro.props;
+
+const language = "en-gb";
+---
+
+<html lang={language} id="top" class="scroll-smooth">
+    <head>
+        <BaseHead {title} {description} />
+    </head>
+
+    <body class="font-junction">
+        <slot />
+        <Footer />
+    </body>
+</html>
+<style>
+@keyframes gradientBackground {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+body {
+    background: linear-gradient(270deg, rgba(0, 219, 147, 0.5), rgba(179, 231, 255, 0.5));
+    background-size: 200% 200%;
+    animation: gradientBackground 10s ease infinite;
+}
+</style>

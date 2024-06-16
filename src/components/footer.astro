@@ -9,6 +9,11 @@ const links: Array<FooterLink> = [
     description: "View source on GitHub",
     icon: "fa-brands:github-alt",
   },
+  {
+    url: "/docs",
+    description: "View source on GitHub",
+    icon: "fa-brands:readme",
+  },
 ];
 ---
 
@@ -16,7 +21,7 @@ const links: Array<FooterLink> = [
   <div class="absolute inset-0 overflow-hidden opacity-10">
     <HeroImage />
   </div>
-  <ul class="relative grid gap-4">
+  <ul class="relative grid gap-6">
     {
       links.map((link) => (
         <li>
